@@ -1,0 +1,144 @@
+\documentclass{article}
+
+\usepackage{amsmath, amsthm, amssymb, amsfonts}
+\usepackage{thmtools}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{framed}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tcolorbox}
+
+\colorlet{LightGray}{White!90!Periwinkle}
+\colorlet{LightOrange}{Orange!15}
+\colorlet{LightGreen}{Green!15}
+
+\newcommand{\HRule}[1]{\rule{\linewidth}{#1}}
+
+\declaretheoremstyle[name=Theorem,]{thmsty}
+\declaretheorem[style=thmsty,numberwithin=section]{theorem}
+\tcolorboxenvironment{theorem}{colback=LightGray}
+
+\declaretheoremstyle[name=Proposition,]{prosty}
+\declaretheorem[style=prosty,numberlike=theorem]{proposition}
+\tcolorboxenvironment{proposition}{colback=LightOrange}
+
+\declaretheoremstyle[name=Principle,]{prcpsty}
+\declaretheorem[style=prcpsty,numberlike=theorem]{principle}
+\tcolorboxenvironment{principle}{colback=LightGreen}
+
+\setstretch{1.2}
+\geometry{
+    textheight=9in,
+    textwidth=5.5in,
+    top=1in,
+    headheight=12pt,
+    headsep=25pt,
+    footskip=30pt
+}
+
+% ------------------------------------------------------------------------------
+
+\begin{document}
+
+% ------------------------------------------------------------------------------
+% Cover Page and ToC
+% ------------------------------------------------------------------------------
+
+\title{ \normalsize \textsc{}
+		\\ [2.0cm]
+		\HRule{1.5pt} \\
+		\LARGE \textbf{\uppercase{Relatório do trabalho 1 \\ Analisador Léxico}
+		\HRule{2.0pt} \\ [0.6cm] \LARGE{BCC328 - Construção de compiladores I} \vspace*{10\baselineskip}}
+		}
+\date{}
+\author{\textbf{Autores:} \\
+		19.2.4004 - Mateus Henrique Máximo Lima de Souza\\
+		19.2.4008 - Luiz Fernando Rodrigues Fernandes\\
+		24.1}
+
+\maketitle
+\newpage
+
+% ------------------------------------------------------------------------------
+
+\section{Introdução}
+Este trabalho apresenta o desenvolvimento de um analisador léxico utilizando a linguagem de programação Haskell e a ferramenta Alex. O objetivo principal deste relatório é especificar o processo de criação desse componente para a linguagem Lang, garantindo a correta identificação e categorização dos tokens presentes nos programas escritos nessa linguagem.
+
+\subsection{Análise Léxica}
+
+A análise léxica é a primeira fase do processo de compilação, onde o código fonte é transformado em uma sequência de tokens. Cada token representa uma unidade atômica do código, como palavras-chave, identificadores, operadores e literais. A função principal do analisador léxico (lexer) é ler o código fonte, identificar os padrões léxicos e categorizá-los corretamente.
+
+Nesta etapa, o lexer percorre o código fonte caractere por caractere, agrupando-os em tokens conforme as regras léxicas definidas. Essas regras são geralmente especificadas por expressões regulares que descrevem os padrões válidos na linguagem de programação. O lexer deve ser capaz de distinguir entre diferentes tipos de tokens e ignorar espaços em branco e comentários que não são relevantes para a análise sintática.
+
+A correta implementação do analisador léxico é crucial para a construção de um compilador. Erros na análise léxica podem levar a falhas nas etapas subsequentes de análise sintática e semântica. Portanto, é fundamental que o lexer seja preciso e eficiente na categorização dos tokens.
+
+No contexto deste trabalho, utilizamos a ferramenta Alex para gerar o lexer. Alex permite definir padrões léxicos usando expressões regulares e gera automaticamente o código Haskell correspondente. Essa abordagem facilita a implementação do lexer e garante a precisão na identificação dos tokens.
+
+A seguir, apresentamos as ferramentas utilizadas para construção do Lexer para a linguagem Lang.
+
+\subsection{Ferramentas utilizadas}
+\subsubsection{Alex}
+Alex é uma ferramenta para a geração de analisadores léxicos em Haskell. Ele permite a definição de padrões léxicos usando expressões regulares e gera automaticamente o código Haskell correspondente para a análise desses padrões.
+
+\subsubsection{Cabal}
+Cabal é uma ferramenta de gerenciamento de pacotes e construção de projetos Haskell. Ele facilita a especificação das dependências do projeto, configuração de pacotes, construção e teste de projetos Haskell.
+
+\section{Desenvolvimento}
+Nesta seção, apresentamos as principais decisões de projeto tomadas durante o desenvolvimento do analisador léxico para a linguagem Lang. Essas decisões incluem a definição de expressões regulares para a categorização de tokens, funções auxiliares criadas e a interface para utilização do analisador léxico.
+
+\subsection{Expressões regulares}
+A implementação do lexer foi baseada em expressões regulares que definem os padrões para cada tipo de token reconhecido pela linguagem Lang. As expressões regulares foram utilizadas para descrever identificadores, tipos, números inteiros, números de ponto flutuante, literais de caracteres, operadores e palavras-chave da linguagem.
+\\\\
+Como descrito abaixo:
+\begin{itemize}
+    \item A expressão regular para identificar números inteiros \texttt{\@integer} foi definida como \texttt{\$digit+}, onde \texttt{\$digit} representa qualquer dígito de 0 a 9. O símbolo \texttt{+} indica que a sequência deve conter um ou mais dígitos consecutivos.
+    \item Para números de ponto flutuante (\texttt{\@float}), a expressão regular usada foi \texttt{\$digit+ "." \$digit+ | "." \$digit+}, que permite reconhecer tanto números na forma "123.456" quanto na forma ".456".
+    \item As expressões regulares \texttt{\$lowercase}, \texttt{\$uppercase}, \texttt{\$alpha}, e \texttt{\$underscore} foram usadas para definir as categorias básicas de caracteres:
+    \begin{itemize}
+        \item \texttt{\$lowercase} foi definida como \texttt{[a-z]}, representando qualquer letra minúscula do alfabeto.
+        \item \texttt{\$uppercase} foi definida como \texttt{[A-Z]}, representando qualquer letra maiúscula do alfabeto.
+        \item \texttt{\$alpha} combina \texttt{\$lowercase} e \texttt{\$uppercase}, sendo definida como \texttt{[\$lowercase \$uppercase]}, o que significa que ela reconhece qualquer letra do alfabeto, seja maiúscula ou minúscula.
+        \item \texttt{\$underscore} foi definida como \texttt{\_}, representando o caractere sublinhado (underscore).
+    \end{itemize}
+    \item Os identificadores (\texttt{\@identifier}) foram definidos como uma letra minúscula seguida de uma combinação de letras, dígitos ou underscores (\texttt{\$lowercase[\$alpha \$digit \$underscore]}).
+    \item Nome de tipos (\texttt{\@typename}) seguem a convenção de começar com uma letra maiúscula, seguida de letras, dígitos ou underscores (\texttt{\$uppercase[\$alpha \$digit \$underscore]}).
+    \item Literais de caracteres (\texttt{@literalChar}) são caracteres únicos delimitados por aspas simples. Esses foram definidos como um único caractere alfabético ou um caractere especial de escape, como (\texttt{\textbackslash n}), (\texttt{\textbackslash t}), (\texttt{\textbackslash b}), (\texttt{\textbackslash r}), (\texttt{\textbackslash '}), ou (\texttt{\textbackslash\textbackslash}) através da seguinte expressão regular: \texttt{@literalChar = \$alpha | \textbackslash{}\textbackslash{}n | \textbackslash{}\textbackslash{}t | \textbackslash{}\textbackslash{}b | \textbackslash{}\textbackslash{}r | \textbackslash{}\textbackslash{} | \textbackslash{}\textbackslash{}\textbackslash{}\textbackslash{} | \textbackslash{}'} que, quando combinada com a especificação \texttt{"'" @literalChar "'"}, forma um caractere literal válido de acordo com a linguagem Lang.
+\end{itemize}
+
+Essas expressões regulares são automaticamente convertidas em autômatos finitos pela ferramenta Alex, que é usada para gerar o código Haskell responsável pela análise léxica. Cada expressão regular corresponde a um estado do autômato, que percorre o código fonte caractere por caractere, categorizando-o conforme as regras definidas.
+
+É importante ressaltar que a definição completa dos tokens para palavras reservadas, comandos, operadores e outros símbolos específicos podem ser encontrados no arquivo Lexer.x fornecido, e não foram detalhadamente especificados neste relatório.
+
+\subsection{Funções auxiliares}
+Para facilitar a leitura de arquivos e a exibição dos tokens gerados como especificado na descrição do trabalho, foram criadas algumas funções auxiliares no Main.hs:
+\\\\
+\textbf{Função processFile:} Esta função auxilia na leitura do arquivo de entrada, verificando se o arquivo existe e lidando com erros caso o arquivo não seja encontrado. Em seguida, ela passa o conteúdo do arquivo para o lexer, que gera uma lista de tokens.
+\\\\
+\textbf{Função formatToken:} Esta função formata os tokens gerados pelo Alex, no formato especificado pelo exemplo da Seção 2 do enunciado do trabalho.
+\\\\
+\textbf{Função printTokens:} Esta função utiliza a função formatToken para imprimir os caracteres formatados e os imprime um por linha.
+
+\subsection{Interface para utilização do analisador léxico}
+Para cumprir com os requisitos especificados no trabalho, foi criado um arquivo Main.hs na pasta app. Este arquivo é responsável por receber um arquivo de entrada contendo código na linguagem Lang e, em seguida, imprimir os tokens gerados pelo lexer ou reportar erros caso ocorram durante o processo de análise léxica.
+\\\\
+O programa, ao ser executado via \textbf{stack run}, oferece ao usuário duas opções:
+
+\begin{enumerate}
+    \item \textbf{Utilizar o arquivo \texttt{program.lang}:} Esta opção permite que o usuário utilize um arquivo padrão chamado \texttt{program.lang}, que está localizado na pasta \texttt{app}.
+    \item \textbf{Fornecer um caminho absoluto:} Como alternativa, o usuário pode optar por fornecer o caminho absoluto de um arquivo de sua escolha.
+\end{enumerate}
+
+\section{Execução}
+Para compilar e executar o analisador léxico da linguagem Lang, utilizamos as ferramentas fornecidas pelo Stack.
+
+O comando \textbf{stack run} é utilizado para compilar e executar a aplicação. Este comando é suficiente para verificar se o projeto está atualizado, compilar o código-fonte, se necessário, e em seguida, executar o programa. Durante a execução, o programa oferece ao usuário duas opções, conforme descrito na seção anterior: (1) utilizar um arquivo padrão chamado \texttt{program.lang} localizado na pasta \texttt{app} ou (2) fornecer o caminho absoluto de um arquivo de sua escolha.
+
+\newpage
+
+
+\end{document}

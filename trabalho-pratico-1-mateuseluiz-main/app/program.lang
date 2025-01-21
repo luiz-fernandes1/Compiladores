@@ -1,0 +1,35 @@
+data Racional {
+    numerador :: Int;
+    denominador :: Int;
+}
+
+main(args :: String []) {
+    print fat(10)[0];
+    if (true && !false) then {
+        x = 1.23;
+        y = 'a';
+        z = null;
+		w = .111;
+    }
+    iterate (10) {
+        print x;
+    }
+    read x;
+    print x + y * (z / 2);
+    divmod(5, 2) <q, r>;
+}
+
+fat(num :: Int) : Int {
+    if (num < 1)
+        return 1;
+    else
+        return num * fat(num-1)[0];
+}
+
+divmod(num :: Int, div :: Int) : Int, Int {
+    q = num / div;
+    r = num % div;
+    return q, r;
+}
+
+.
