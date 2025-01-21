@@ -1,0 +1,11 @@
+data Node {
+  value :: Int;
+  left :: Node;
+  right :: Node;
+}
+
+main() {
+  tree = new Node;
+
+	print tree.left;
+}

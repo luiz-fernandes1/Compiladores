@@ -1,0 +1,46 @@
+data Stack {
+  elements :: Int[];
+  top :: Int;
+}
+
+create_stack() : Stack {
+	stack = new Stack;
+  stack.elements = new Int[5];  
+  stack.top = -1;
+
+  return stack;
+}
+
+push(stack :: Stack, value :: Int) : Stack {
+  stack.top = stack.top + 1;
+  stack.elements[stack.top] = value;
+
+	return stack;
+}
+
+pop(stack :: Stack) : Stack {
+  stack.elements[stack.top] = 0;
+  stack.top = stack.top - 1;
+    
+  return stack;
+}
+
+size(stack :: Stack) : Int {
+  return stack.top + 1;
+}
+
+main() {
+  create_stack()<stack>;
+    
+  push(stack, 10)<stack>;
+  push(stack, 20)<stack>;
+  push(stack, 30)<stack>;
+  push(stack, 40)<stack>;
+  push(stack, 50)<stack>;
+
+	print stack;
+
+	pop(stack)<stack>;
+
+	print stack;
+}
